@@ -1,5 +1,5 @@
 -- 创建数据库
-DROP DATABASE IF EXISTS charityevents_db;
+
 CREATE DATABASE charityevents_db;
 USE charityevents_db;
 
