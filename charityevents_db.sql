@@ -1,42 +1,50 @@
--- 创建数据库
-
+-- Drop existing database to ensure clean initialization
+DROP DATABASE IF EXISTS charityevents_db;
+-- Create the main database for charity event system
 CREATE DATABASE charityevents_db;
+-- Switch to target database for subsequent operations
 USE charityevents_db;
 
-
+--Create an activity classification table
+--Function: Store the classification of activity types
 CREATE TABLE event_categories (
-    category_id INT PRIMARY KEY AUTO_INCREMENT,
-    category_name VARCHAR(100) NOT NULL
+    category_id INT PRIMARY KEY AUTO_INCREMENT, --Classification number, primary key, auto-increment
+    category_name VARCHAR(100) NOT NULL  --Category name, not empty
 );
 
-
+-- Table: charity_organisations
+-- Description: Stores basic information of charitable organizations that host charity events
 CREATE TABLE charity_organisations (
-    org_id INT PRIMARY KEY AUTO_INCREMENT,
-    org_name VARCHAR(200) NOT NULL,
-    mission TEXT,
-    contact_email VARCHAR(100),
-    contact_phone VARCHAR(20),
-    address VARCHAR(255) NULL
+    org_id INT PRIMARY KEY AUTO_INCREMENT,       -- Unique organization ID, auto-increment primary key
+    org_name VARCHAR(200) NOT NULL,              -- Full name of the charity organization, not empty
+    mission TEXT,                                 -- Mission statement and core purpose of the organization
+    contact_email VARCHAR(100),                   -- Official contact email address
+    contact_phone VARCHAR(20),                    -- Official contact phone number
+    address VARCHAR(255) NULL                     -- Organization physical address, nullable field
 );
 
 
+-- Table: charity_events
+-- Description: Core business table for charity events
 CREATE TABLE charity_events (
-    event_id INT PRIMARY KEY AUTO_INCREMENT,
-    org_id INT NOT NULL,
-    category_id INT NOT NULL,
-    event_name VARCHAR(255) NOT NULL,
-    event_description TEXT NOT NULL,
-    event_purpose TEXT NOT NULL,
-    event_date DATETIME NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    ticket_price DECIMAL(10,2) NOT NULL,
-    charity_goal DECIMAL(12,2) NOT NULL,
-    current_progress DECIMAL(12,2) DEFAULT 0.00,
-    is_suspended TINYINT(1) DEFAULT 0,
+    event_id INT PRIMARY KEY AUTO_INCREMENT,      -- Unique event ID, auto-increment primary key
+    org_id INT NOT NULL,                          -- Foreign key: links to the hosting organization
+    category_id INT NOT NULL,                     -- Foreign key: links to the event category
+    event_name VARCHAR(255) NOT NULL,             -- Full title of the charity event
+    event_description TEXT NOT NULL,              -- Detailed introduction and activity content
+    event_purpose TEXT NOT NULL,                  -- Charitable purpose and social value of the event
+    event_date DATETIME NOT NULL,                 -- Exact date and time of the event
+    location VARCHAR(255) NOT NULL,               -- Venue / holding location
+    ticket_price DECIMAL(10,2) NOT NULL,          -- Ticket price, 0.00 stands for free entry
+    charity_goal DECIMAL(12,2) NOT NULL,          -- Target fundraising amount for the event
+    current_progress DECIMAL(12,2) DEFAULT 0.00,  -- Current amount raised, default value is 0
+    is_suspended TINYINT(1) DEFAULT 0,            -- Event status: 0=active (show on homepage), 1=suspended (hidden)
+    -- Foreign key constraints to guarantee data integrity
     FOREIGN KEY (org_id) REFERENCES charity_organisations(org_id),
     FOREIGN KEY (category_id) REFERENCES event_categories(category_id)
 );
 
+-- Initial Data: 6 Event Categories
 INSERT INTO event_categories (category_name) 
 VALUES 
 ('Charity Gala'),
@@ -46,6 +54,7 @@ VALUES
 ('Community Service'),
 ('Volunteer Program');
 
+-- Initial Data: 4 Charity Organizations
 INSERT INTO charity_organisations(org_name, mission, contact_email, contact_phone, address)
 VALUES
 (
@@ -77,6 +86,7 @@ VALUES
     NULL
 );
 
+-- Initial Data: 8 Sample Charity Events
 INSERT INTO charity_events(org_id, category_id, event_name, event_description, event_purpose, event_date, location, ticket_price, charity_goal, current_progress, is_suspended)
 VALUES
 (
