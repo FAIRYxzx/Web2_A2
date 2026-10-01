@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Charity Events</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html">Search Events</a></li>
+        </ul>
+    </nav>
+
+    <header class="page-header">
+        <h1>Search Charity Events</h1>
+        <p>Filter events by date, location or category to find activities that interest you.</p>
+    </header>
+
+    <form id="searchForm">
+        <div class="form-group">
+            <label for="inpDate">Event Date</label>
+            <input type="date" id="inpDate">
+        </div>
+        <div class="form-group">
+            <label for="inpLocation">Location (keyword search)</label>
+            <input type="text" id="inpLocation" placeholder="e.g. Park, Hall, City">
+        </div>
+        <div class="form-group">
+            <label for="selCategory">Event Category</label>
+            <select id="selCategory">
+                <option value="">-- All Categories --</option>
+            </select>
+        </div>
+        <div>
+            <button class="btn" type="submit">Search Events</button>
+            <button class="btn btn-clear" type="button" id="btnClear">Clear Filters</button>
+        </div>
+    </form>
+
+    <div id="errorArea"></div>
+    <div id="searchResultList"></div>
+
+    <footer>
+        <p>&copy; 2026 City Charity Events Portal. All rights reserved.</p>
+    </footer>
+
+    <script src="js/search.js"></script>
+</body>
+</html>
