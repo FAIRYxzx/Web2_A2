@@ -36,8 +36,7 @@ app.get('/api/events/home', async (req, res) => {
             INNER JOIN charity_organisations o 
                 ON e.org_id = o.org_id
             WHERE e.is_suspended = 0 
-              AND e.event_date >= NOW()
-            ORDER BY e.event_date ASC
+            ORDER BY e.event_start_datetime ASC
         `;
         const [rows] = await db.query(sql);
         res.json(rows);
@@ -63,13 +62,14 @@ app.get('/api/categories', async (req, res) => {
 });
 
 /**
- * Search events by optional filter criteria
- * All filters are optional and can be combined freely
+ * Event search endpoint: filter by start date (on or after), location, category and price range
  * @route GET /api/events/search
- * @param {string} [req.query.date] - Exact event date in YYYY-MM-DD format
- * @param {string} [req.query.location] - Keyword for fuzzy location search
- * @param {string} [req.query.category_id] - Numeric category ID filter
- * @returns {Array<Object>} List of matched event objects
+ * @param {string} req.query.date - Minimum start date (YYYY-MM-DD), returns events starting on or after this date
+ * @param {string} req.query.location - Location keyword
+ * @param {number} req.query.category_id - Category ID
+ * @param {number} req.query.price_min - Minimum ticket price
+ * @param {number} req.query.price_max - Maximum ticket price
+ * @returns {Array<Object>} JSON array of matching events
  */
 app.get('/api/events/search', async (req, res) => {
     try {
@@ -87,23 +87,34 @@ app.get('/api/events/search', async (req, res) => {
         `;
         const params = [];
 
-        // Append date filter if provided
-        if (req.query.date) {
-            baseSql += ' AND DATE(e.event_date) = ? ';
-            params.push(req.query.date);
+        // Append filters dynamically
+        // Fix: date input acts as "start from" threshold, not exact day match
+        if (req.query.date && req.query.date.trim() !== '') {
+            baseSql += ' AND e.event_start_datetime >= ? ';
+            params.push(`${req.query.date} 00:00:00`);
         }
-        // Append location fuzzy filter if provided
-        if (req.query.location) {
+        if (req.query.location && req.query.location.trim() !== '') {
             baseSql += ' AND e.location LIKE ? ';
             params.push(`%${req.query.location}%`);
         }
-        // Append category filter if provided
-        if (req.query.category_id) {
+        if (req.query.category_id && req.query.category_id !== '') {
             baseSql += ' AND e.category_id = ? ';
             params.push(req.query.category_id);
         }
+        if (req.query.price_min !== undefined && req.query.price_min !== '') {
+            baseSql += ' AND e.ticket_price >= ? ';
+            params.push(req.query.price_min);
+        }
+        if (req.query.price_max !== undefined && req.query.price_max !== '') {
+            baseSql += ' AND e.ticket_price <= ? ';
+            params.push(req.query.price_max);
+        }
 
-        baseSql += ' ORDER BY e.event_date ASC ';
+        baseSql += ' ORDER BY e.event_start_datetime ASC ';
+
+        // Debug log: print final SQL and params in console
+        console.log('Search SQL:', baseSql);
+        console.log('Search params:', params);
 
         const [rows] = await db.query(baseSql, params);
         res.json(rows);
@@ -112,6 +123,7 @@ app.get('/api/events/search', async (req, res) => {
         res.status(500).json({ error: 'Event search failed' });
     }
 });
+
 
 /**
  * Get full details of a single event by its ID

@@ -1,3 +1,4 @@
+// Base URL of the backend API service
 const API_BASE = "http://localhost:8080/api";
 
 window.addEventListener('DOMContentLoaded', async () => {
@@ -17,6 +18,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         const event = await response.json();
         renderEventDetail(event);
+        initBackToTop();
     } catch (err) {
         document.querySelector("#errorDetail").innerHTML = 
             '<p class="error-msg">Could not load event details. Please try again later.</p>';
@@ -25,14 +27,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 /**
- * Render full event details into the page and bind register button
- * @param {Object} event - Full event data object from API
+ * Render full details of a single event into the page container
+ * @param {Object} event - Full event detail data object
  * @returns {void}
  */
 function renderEventDetail(event) {
     const container = document.querySelector("#detailContainer");
-
-    // Calculate fundraising progress percentage
     const progressPercent = Math.min(100, Math.round((event.current_progress / event.charity_goal) * 100));
 
     container.innerHTML = `
@@ -40,7 +40,7 @@ function renderEventDetail(event) {
             <h1>${event.event_name}</h1>
             <p><strong>Organised by:</strong> ${event.org_name}</p>
             <p><strong>Category:</strong> ${event.category_name}</p>
-            <p><strong>Date & Time:</strong> ${new Date(event.event_date).toLocaleString()}</p>
+            <p><strong>Duration:</strong> ${formatDateTime(event.event_start_datetime)} - ${formatDateTime(event.event_end_datetime)}</p>
             <p><strong>Location:</strong> ${event.location}</p>
             
             <hr>
@@ -67,8 +67,37 @@ function renderEventDetail(event) {
         </div>
     `;
 
-    // Register button - show alert as required (feature under construction)
+    // Register button click handler
     document.querySelector("#btnRegister").addEventListener('click', () => {
         alert("This feature is currently under construction.");
+    });
+}
+
+/**
+ * Format ISO datetime string into local readable format
+ * @param {string} datetimeStr - ISO standard datetime string
+ * @returns {string} Formatted local datetime text
+ */
+function formatDateTime(datetimeStr) {
+    return new Date(datetimeStr).toLocaleString();
+}
+
+/**
+ * Initialize back-to-top button: show/hide on scroll, smooth scroll to top on click
+ * @returns {void}
+ */
+function initBackToTop() {
+    const btn = document.querySelector("#btnBackTop");
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.classList.add('show');
+        } else {
+            btn.classList.remove('show');
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
