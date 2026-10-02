@@ -25,9 +25,32 @@
 
     <!-- Main Content: dynamically loaded event list -->
     <main>
-        <h2>Upcoming Charity Events</h2>
+        <h2>All Charity Events</h2>
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="filterStatus">Event Status</label>
+                <select id="filterStatus">
+                    <option value="all">All Events</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="past">Past Events</option>
+                    <option value="funded">Fully Funded</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filterPriceMin">Ticket Price Range ($)</label>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="number" id="filterPriceMin" min="0" step="0.01" placeholder="Min">
+                    <span>—</span>
+                    <input type="number" id="filterPriceMax" min="0" step="0.01" placeholder="Max">
+                </div>
+            </div>
+
+        </div>
         <div id="eventListHome"></div>
     </main>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="btnBackTop" title="Back to top">↑</button>
 
     <!-- Page Footer -->
     <footer>
