@@ -33,7 +33,8 @@ CREATE TABLE charity_events (
     event_name VARCHAR(255) NOT NULL,             -- Full title of the charity event
     event_description TEXT NOT NULL,              -- Detailed introduction and activity content
     event_purpose TEXT NOT NULL,                  -- Charitable purpose and social value of the event
-    event_date DATETIME NOT NULL,                 -- Exact date and time of the event
+    event_start_datetime DATETIME NOT NULL,       -- The specific date and time when the activity will commence 
+    event_end_datetime DATETIME,          -- The specific date and time of the event's conclusion
     location VARCHAR(255) NOT NULL,               -- Venue / holding location
     ticket_price DECIMAL(10,2) NOT NULL,          -- Ticket price, 0.00 stands for free entry
     charity_goal DECIMAL(12,2) NOT NULL,          -- Target fundraising amount for the event
@@ -87,13 +88,18 @@ VALUES
 );
 
 -- Initial Data: 8 Sample Charity Events
-INSERT INTO charity_events(org_id, category_id, event_name, event_description, event_purpose, event_date, location, ticket_price, charity_goal, current_progress, is_suspended)
+INSERT INTO charity_events(
+    org_id, category_id, event_name, 
+    event_description, event_purpose, 
+    event_start_datetime, event_end_datetime, 
+    location, ticket_price, charity_goal, current_progress, is_suspended
+)
 VALUES
 (
     1, 3, 'City 5K Fun Run 2026',
     'A 5-kilometer casual running event open to citizens of all ages, with on-site snack stations and souvenir medals.',
     'Raise public awareness of poverty issues; all ticket revenue will be used for community food bank supplies.',
-    '2026-10-15 08:00:00',
+    '2026-10-15 08:00:00', '2026-10-15 12:00:00',
     'Central City Park',
     25.00,
     15000.00,
@@ -104,7 +110,7 @@ VALUES
     1, 1, 'Annual Charity Gala Dinner',
     'Formal banquet night with charity speeches, silent auction sessions and live band performance.',
     'Raise funds for the winter heating assistance program for low-income families.',
-    '2026-11-02 18:30:00',
+    '2026-11-02 18:30:00', '2026-11-02 22:30:00',
     'Grand City Ballroom',
     120.00,
     30000.00,
@@ -115,7 +121,7 @@ VALUES
     2, 2, 'Children Charity Art Auction',
     'Auction of paintings and handcrafts donated by primary school students, plus artworks from local artists.',
     'All proceeds will be used to build reading rooms in rural primary schools and purchase children books.',
-    '2026-10-22 19:00:00',
+    '2026-10-22 19:00:00', '2026-10-22 22:00:00',
     'City Art Center Hall',
     0.00,
     8000.00,
@@ -126,7 +132,7 @@ VALUES
     2, 4, 'Winter Warmth Material Donation',
     'Collect winter coats, scarves, gloves and stationery for children in mountainous areas.',
     'Gather living supplies and learning materials to help children in remote areas get through the cold winter.',
-    '2026-11-20 09:00:00',
+    '2026-11-20 09:00:00', '2026-11-20 17:00:00',
     'Bright Future Center Lobby',
     0.00,
     5000.00,
@@ -137,7 +143,7 @@ VALUES
     3, 6, 'River Bank Cleaning Volunteer Program',
     'One-day volunteer activity to clean up garbage along the city river bank; tools and training provided.',
     'Improve the river ecological environment, and promote public awareness of environmental protection.',
-    '2026-10-08 09:30:00',
+    '2026-10-08 09:30:00', '2026-10-08 15:30:00',
     'Riverside Green Park',
     0.00,
     4000.00,
@@ -148,7 +154,7 @@ VALUES
     3, 5, 'Community Greening Service Day',
     'Volunteers help plant flowers and trees in old residential areas, and teach residents gardening knowledge.',
     'Improve the living environment of old communities, and build a green and beautiful neighborhood.',
-    '2026-09-10 08:30:00',
+    '2026-09-10 08:30:00', '2026-09-10 16:00:00',
     'Old Town East Community',
     0.00,
     3500.00,
@@ -159,7 +165,7 @@ VALUES
     4, 1, 'Charity Gala for Senior Citizens',
     'A gala with classic song performances and afternoon tea, specially prepared for local elderly residents.',
     'Enrich the spiritual life of empty-nest elderly, and raise funds for the community senior care service.',
-    '2026-12-18 14:00:00',
+    '2026-12-18 14:00:00', '2026-12-18 17:30:00',
     'Harbour View Hotel Function Room',
     15.00,
     12000.00,
@@ -170,7 +176,7 @@ VALUES
     4, 5, 'Home Companion Volunteer Service',
     'Volunteers visit homebound elderly regularly, help with housework and provide emotional companionship.',
     'Relieve the loneliness of the elderly living alone, and help them solve daily life inconveniences.',
-    '2026-11-18 09:00:00',
+    '2026-11-18 09:00:00', '2026-11-18 12:00:00',
     'South Street Community',
     0.00,
     9500.00,
